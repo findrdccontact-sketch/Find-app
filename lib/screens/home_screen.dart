@@ -112,6 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
             actions: [
               IconButton(
                 icon: const Icon(Icons.notifications, color: Colors.white),
+                tooltip: 'Notifications',
                 onPressed: () {
                   _showNotificationsDialog(context, provider);
                 },
@@ -138,6 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             suffixIcon: _searchController.text.isNotEmpty
                                 ? IconButton(
                                     icon: const Icon(Icons.clear),
+                                    tooltip: 'Effacer la recherche',
                                     onPressed: () {
                                       _searchController.clear();
                                       provider.setSearchQuery('');
