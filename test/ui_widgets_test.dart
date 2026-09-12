@@ -78,7 +78,7 @@ void main() {
     expect(find.text('République Démocratique du Congo'), findsOneWidget);
   });
 
-  testWidgets('ListingDetailScreen renders details, badges, and contact buttons', (WidgetTester tester) async {
+  testWidgets('ListingDetailScreen renders details, badges, contact buttons, and tooltips', (WidgetTester tester) async {
     final provider = AppProvider();
     final sampleListing = provider.latestListings.first;
 
@@ -98,5 +98,10 @@ void main() {
     expect(find.text('Caractéristiques'), findsOneWidget);
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
+
+    expect(find.byTooltip('Retour'), findsOneWidget);
+    expect(find.byTooltip('Retirer des favoris'), findsOneWidget);
+    expect(find.byTooltip("Partager l'annonce"), findsOneWidget);
+    expect(find.byTooltip('Signaler cette annonce'), findsOneWidget);
   });
 }
