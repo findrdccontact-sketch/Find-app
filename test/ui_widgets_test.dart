@@ -98,5 +98,13 @@ void main() {
     expect(find.text('Caractéristiques'), findsOneWidget);
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
+
+    // Verify accessible tooltips on action buttons
+    // The favorite icon button tooltip varies based on whether sampleListing is already favorite or not
+    final isFav = provider.isFavorite(sampleListing.id);
+    final expectedFavTooltip = isFav ? 'Retirer des favoris' : 'Ajouter aux favoris';
+    expect(find.byTooltip(expectedFavTooltip), findsOneWidget);
+    expect(find.byTooltip('Partager l\'annonce'), findsOneWidget);
+    expect(find.byTooltip('Signaler un problème'), findsOneWidget);
   });
 }
