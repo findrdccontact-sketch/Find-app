@@ -46,6 +46,13 @@ void main() {
     expect(find.text('Maison'), findsOneWidget);
     expect(find.text('Appartement'), findsOneWidget);
     expect(find.text('Dernières annonces'), findsOneWidget);
+    expect(find.byTooltip('Notifications'), findsOneWidget);
+
+    // Scroll down to make listing cards visible
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -600));
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Ajouter aux favoris'), findsAtLeastNWidgets(1));
   });
 
   testWidgets('SearchScreen expands filters and toggles map view', (WidgetTester tester) async {
