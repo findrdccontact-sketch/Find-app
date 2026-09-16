@@ -5,6 +5,7 @@ import 'package:find_app/main.dart';
 import 'package:find_app/screens/home_screen.dart';
 import 'package:find_app/screens/listing_detail_screen.dart';
 import 'package:find_app/screens/search_screen.dart';
+import 'package:find_app/widgets/listing_card.dart';
 import 'package:find_app/services/app_provider.dart';
 
 void main() {
@@ -98,5 +99,26 @@ void main() {
     expect(find.text('Caractéristiques'), findsOneWidget);
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
+  });
+
+  testWidgets('ListingCard includes favorite button accessibility tooltip', (WidgetTester tester) async {
+    final provider = AppProvider();
+    final sampleListing = provider.latestListings.first;
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        ListingCard(
+          listing: sampleListing,
+          isFavorite: false,
+          onTap: () {},
+          onFavoriteToggle: () {},
+        ),
+        customProvider: provider,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final iconButton = tester.widget<IconButton>(find.byType(IconButton));
+    expect(iconButton.tooltip, 'Ajouter aux favoris');
   });
 }
