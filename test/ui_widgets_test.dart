@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:find_app/main.dart';
+import 'package:find_app/models/app_user.dart';
 import 'package:find_app/screens/home_screen.dart';
 import 'package:find_app/screens/listing_detail_screen.dart';
+import 'package:find_app/screens/owner_dashboard_screen.dart';
 import 'package:find_app/screens/search_screen.dart';
 import 'package:find_app/services/app_provider.dart';
 
@@ -98,5 +100,60 @@ void main() {
     expect(find.text('Caractéristiques'), findsOneWidget);
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
+  });
+
+  testWidgets('ListingDetailScreen displays accessible tooltips for action buttons', (WidgetTester tester) async {
+    final provider = AppProvider();
+    final sampleListing = provider.latestListings.first;
+    final isFav = provider.isFavorite(sampleListing.id);
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        ListingDetailScreen(
+          listing: sampleListing,
+          onBack: () {},
+        ),
+        customProvider: provider,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Retour'), findsOneWidget);
+    expect(find.byTooltip(isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'), findsOneWidget);
+    expect(find.byTooltip('Partager'), findsOneWidget);
+    expect(find.byTooltip('Signaler'), findsOneWidget);
+  });
+
+  testWidgets('OwnerDashboardScreen displays delete confirmation dialog', (WidgetTester tester) async {
+    final provider = AppProvider();
+    provider.switchUserRole(UserRole.owner);
+
+    // Add a listing owned by the current user
+    final userListing = provider.latestListings.first.copyWith(
+      id: 'usr_lst_999',
+      ownerId: provider.currentUser.id,
+      title: 'Mon Logement de Test',
+    );
+    provider.addListing(userListing);
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        OwnerDashboardScreen(onEditListing: (_) {}),
+        customProvider: provider,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final deleteBtn = find.byTooltip('Supprimer l\'annonce').first;
+    expect(deleteBtn, findsOneWidget);
+
+    await tester.ensureVisible(deleteBtn);
+    await tester.pumpAndSettle();
+
+    await tester.tap(deleteBtn);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Supprimer l\'annonce'), findsOneWidget);
+    expect(find.text('Annuler'), findsOneWidget);
   });
 }
