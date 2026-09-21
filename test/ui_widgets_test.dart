@@ -6,6 +6,7 @@ import 'package:find_app/screens/home_screen.dart';
 import 'package:find_app/screens/listing_detail_screen.dart';
 import 'package:find_app/screens/search_screen.dart';
 import 'package:find_app/services/app_provider.dart';
+import 'package:find_app/widgets/listing_card.dart';
 
 void main() {
   Widget buildTestableWidget(Widget child, {AppProvider? customProvider}) {
@@ -98,5 +99,68 @@ void main() {
     expect(find.text('Caractéristiques'), findsOneWidget);
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
+  });
+
+  testWidgets('Icon buttons have accessible tooltips', (WidgetTester tester) async {
+    final provider = AppProvider();
+    final sampleListing = provider.latestListings.first;
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        HomeScreen(
+          onListingSelect: (_) {},
+          onNavigateToPublish: () {},
+          onCategorySelect: (_) {},
+        ),
+        customProvider: provider,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byWidgetPredicate((w) => w is IconButton && w.tooltip == 'Notifications'),
+      findsOneWidget,
+    );
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        ListingCard(
+          listing: sampleListing,
+          isFavorite: false,
+          onTap: () {},
+          onFavoriteToggle: () {},
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byWidgetPredicate((w) => w is IconButton && w.tooltip == 'Ajouter aux favoris'),
+      findsOneWidget,
+    );
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        ListingDetailScreen(
+          listing: sampleListing,
+          onBack: () {},
+        ),
+        customProvider: provider,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byWidgetPredicate((w) => w is IconButton && w.tooltip == 'Retour'),
+      findsOneWidget,
+    );
+    expect(
+      find.byWidgetPredicate((w) => w is IconButton && w.tooltip == 'Partager l\'annonce'),
+      findsOneWidget,
+    );
+    expect(
+      find.byWidgetPredicate((w) => w is IconButton && w.tooltip == 'Signaler l\'annonce'),
+      findsOneWidget,
+    );
   });
 }
