@@ -6,6 +6,7 @@ import 'package:find_app/screens/home_screen.dart';
 import 'package:find_app/screens/listing_detail_screen.dart';
 import 'package:find_app/screens/search_screen.dart';
 import 'package:find_app/services/app_provider.dart';
+import 'package:find_app/widgets/listing_card.dart';
 
 void main() {
   Widget buildTestableWidget(Widget child, {AppProvider? customProvider}) {
@@ -76,6 +77,45 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('République Démocratique du Congo'), findsOneWidget);
+  });
+
+  testWidgets('ListingCard renders favorite tooltip correctly based on isFavorite state', (WidgetTester tester) async {
+    final provider = AppProvider();
+    final sampleListing = provider.latestListings.first;
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        ListingCard(
+          listing: sampleListing,
+          isFavorite: false,
+          onTap: () {},
+          onFavoriteToggle: () {},
+        ),
+        customProvider: provider,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final iconButtonFinder = find.byType(IconButton);
+    expect(iconButtonFinder, findsOneWidget);
+    final IconButton iconButtonWidget = tester.widget(iconButtonFinder);
+    expect(iconButtonWidget.tooltip, equals('Ajouter aux favoris'));
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        ListingCard(
+          listing: sampleListing,
+          isFavorite: true,
+          onTap: () {},
+          onFavoriteToggle: () {},
+        ),
+        customProvider: provider,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final IconButton updatedIconButtonWidget = tester.widget(iconButtonFinder);
+    expect(updatedIconButtonWidget.tooltip, equals('Retirer des favoris'));
   });
 
   testWidgets('ListingDetailScreen renders details, badges, and contact buttons', (WidgetTester tester) async {
