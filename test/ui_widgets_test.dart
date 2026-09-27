@@ -6,6 +6,7 @@ import 'package:find_app/screens/home_screen.dart';
 import 'package:find_app/screens/listing_detail_screen.dart';
 import 'package:find_app/screens/search_screen.dart';
 import 'package:find_app/services/app_provider.dart';
+import 'package:find_app/widgets/listing_card.dart';
 
 void main() {
   Widget buildTestableWidget(Widget child, {AppProvider? customProvider}) {
@@ -46,6 +47,43 @@ void main() {
     expect(find.text('Maison'), findsOneWidget);
     expect(find.text('Appartement'), findsOneWidget);
     expect(find.text('Dernières annonces'), findsOneWidget);
+  });
+
+  testWidgets('ListingCard renders favorite toggle button with accessible tooltip', (WidgetTester tester) async {
+    final provider = AppProvider();
+    final sampleListing = provider.latestListings.first;
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        SingleChildScrollView(
+          child: ListingCard(
+            listing: sampleListing,
+            isFavorite: false,
+            onTap: () {},
+            onFavoriteToggle: () {},
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Ajouter aux favoris'), findsOneWidget);
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        SingleChildScrollView(
+          child: ListingCard(
+            listing: sampleListing,
+            isFavorite: true,
+            onTap: () {},
+            onFavoriteToggle: () {},
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Retirer des favoris'), findsOneWidget);
   });
 
   testWidgets('SearchScreen expands filters and toggles map view', (WidgetTester tester) async {
