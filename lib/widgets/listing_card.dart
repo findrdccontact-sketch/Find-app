@@ -62,6 +62,7 @@ class ListingCard extends StatelessWidget {
                         isFavorite ? Icons.favorite : Icons.favorite_border,
                         color: isFavorite ? Colors.red : Colors.grey.shade700,
                       ),
+                    tooltip: isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris',
                       onPressed: onFavoriteToggle,
                     ),
                   ),

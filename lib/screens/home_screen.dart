@@ -112,6 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
             actions: [
               IconButton(
                 icon: const Icon(Icons.notifications, color: Colors.white),
+                tooltip: 'Notifications',
                 onPressed: () {
                   _showNotificationsDialog(context, provider);
                 },
