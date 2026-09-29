@@ -99,4 +99,42 @@ void main() {
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
   });
+
+  testWidgets('Icon-only buttons have accessibility tooltips attached', (WidgetTester tester) async {
+    final provider = AppProvider();
+    final sampleListing = provider.latestListings.first;
+
+    // Check HomeScreen tooltips & ListingCard tooltips
+    await tester.pumpWidget(
+      buildTestableWidget(
+        HomeScreen(
+          onListingSelect: (_) {},
+          onNavigateToPublish: () {},
+          onCategorySelect: (_) {},
+        ),
+        customProvider: provider,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Notifications'), findsOneWidget);
+    // Top listinglst_003 is favorited initially, so its tooltip is 'Retirer des favoris'
+    expect(find.byTooltip('Retirer des favoris'), findsAtLeastNWidgets(1));
+
+    // Check ListingDetailScreen action tooltips
+    await tester.pumpWidget(
+      buildTestableWidget(
+        ListingDetailScreen(
+          listing: sampleListing,
+          onBack: () {},
+        ),
+        customProvider: provider,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Retirer des favoris'), findsOneWidget);
+    expect(find.byTooltip('Partager l\'annonce'), findsOneWidget);
+    expect(find.byTooltip('Signaler cette annonce'), findsOneWidget);
+  });
 }
