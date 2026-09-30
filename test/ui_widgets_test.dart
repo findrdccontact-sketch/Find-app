@@ -6,6 +6,7 @@ import 'package:find_app/screens/home_screen.dart';
 import 'package:find_app/screens/listing_detail_screen.dart';
 import 'package:find_app/screens/search_screen.dart';
 import 'package:find_app/services/app_provider.dart';
+import 'package:find_app/widgets/listing_card.dart';
 
 void main() {
   Widget buildTestableWidget(Widget child, {AppProvider? customProvider}) {
@@ -98,5 +99,41 @@ void main() {
     expect(find.text('Caractéristiques'), findsOneWidget);
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
+  });
+
+  testWidgets('ListingCard and ListingDetailScreen icon buttons have accessible tooltips', (WidgetTester tester) async {
+    final provider = AppProvider();
+    final sampleListing = provider.latestListings.first;
+    final expectedTooltip = provider.isFavorite(sampleListing.id)
+        ? 'Retirer des favoris'
+        : 'Ajouter aux favoris';
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        ListingCard(
+          listing: sampleListing,
+          isFavorite: provider.isFavorite(sampleListing.id),
+          onTap: () {},
+          onFavoriteToggle: () {},
+        ),
+        customProvider: provider,
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byTooltip(expectedTooltip), findsOneWidget);
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        ListingDetailScreen(
+          listing: sampleListing,
+          onBack: () {},
+        ),
+        customProvider: provider,
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byTooltip(expectedTooltip), findsOneWidget);
+    expect(find.byTooltip('Partager l\'annonce'), findsOneWidget);
+    expect(find.byTooltip('Signaler l\'annonce'), findsOneWidget);
   });
 }
