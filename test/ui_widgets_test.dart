@@ -81,6 +81,7 @@ void main() {
   testWidgets('ListingDetailScreen renders details, badges, and contact buttons', (WidgetTester tester) async {
     final provider = AppProvider();
     final sampleListing = provider.latestListings.first;
+    final isFav = provider.isFavorite(sampleListing.id);
 
     await tester.pumpWidget(
       buildTestableWidget(
@@ -98,5 +99,12 @@ void main() {
     expect(find.text('Caractéristiques'), findsOneWidget);
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
+
+    // Verify tooltips on icon buttons
+    expect(find.byTooltip('Retour'), findsOneWidget);
+    final favTooltip = isFav ? 'Retirer des favoris' : 'Ajouter aux favoris';
+    expect(find.byTooltip(favTooltip), findsOneWidget);
+    expect(find.byTooltip('Partager l\'annonce'), findsOneWidget);
+    expect(find.byTooltip('Signaler l\'annonce'), findsOneWidget);
   });
 }
