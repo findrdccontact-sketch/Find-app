@@ -98,5 +98,14 @@ void main() {
     expect(find.text('Caractéristiques'), findsOneWidget);
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
+
+    // Verify accessible tooltips on action buttons
+    expect(find.byTooltip('Retour'), findsOneWidget);
+    expect(
+      find.byTooltip(provider.isFavorite(sampleListing.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'),
+      findsOneWidget,
+    );
+    expect(find.byTooltip('Partager l\'annonce'), findsOneWidget);
+    expect(find.byTooltip('Signaler l\'annonce'), findsOneWidget);
   });
 }
