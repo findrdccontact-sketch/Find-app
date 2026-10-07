@@ -46,6 +46,9 @@ void main() {
     expect(find.text('Maison'), findsOneWidget);
     expect(find.text('Appartement'), findsOneWidget);
     expect(find.text('Dernières annonces'), findsOneWidget);
+
+    // Verify favorite tooltip in ListingCard
+    expect(find.byTooltip('Retirer des favoris'), findsWidgets);
   });
 
   testWidgets('SearchScreen expands filters and toggles map view', (WidgetTester tester) async {
@@ -98,5 +101,13 @@ void main() {
     expect(find.text('Caractéristiques'), findsOneWidget);
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
+
+    // Verify accessibility tooltips exist for action buttons
+    final expectedFavTooltip = provider.isFavorite(sampleListing.id)
+        ? 'Retirer des favoris'
+        : 'Ajouter aux favoris';
+    expect(find.byTooltip(expectedFavTooltip), findsOneWidget);
+    expect(find.byTooltip('Partager l\'annonce'), findsOneWidget);
+    expect(find.byTooltip('Signaler l\'annonce'), findsOneWidget);
   });
 }
