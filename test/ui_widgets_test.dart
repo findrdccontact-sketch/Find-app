@@ -29,7 +29,7 @@ void main() {
     expect(find.text('Mon Espace'), findsOneWidget);
   });
 
-  testWidgets('HomeScreen renders categories and list items', (WidgetTester tester) async {
+  testWidgets('HomeScreen renders categories and list items with accessibility tooltips', (WidgetTester tester) async {
     await tester.pumpWidget(
       buildTestableWidget(
         HomeScreen(
@@ -46,6 +46,8 @@ void main() {
     expect(find.text('Maison'), findsOneWidget);
     expect(find.text('Appartement'), findsOneWidget);
     expect(find.text('Dernières annonces'), findsOneWidget);
+    expect(find.byTooltip('Notifications'), findsOneWidget);
+    expect(find.byTooltip('Retirer des favoris'), findsAtLeastNWidgets(1));
   });
 
   testWidgets('SearchScreen expands filters and toggles map view', (WidgetTester tester) async {
@@ -78,7 +80,7 @@ void main() {
     expect(find.text('République Démocratique du Congo'), findsOneWidget);
   });
 
-  testWidgets('ListingDetailScreen renders details, badges, and contact buttons', (WidgetTester tester) async {
+  testWidgets('ListingDetailScreen renders details, badges, contact buttons and tooltips', (WidgetTester tester) async {
     final provider = AppProvider();
     final sampleListing = provider.latestListings.first;
 
@@ -98,5 +100,9 @@ void main() {
     expect(find.text('Caractéristiques'), findsOneWidget);
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
+    expect(find.byTooltip('Retour'), findsOneWidget);
+    expect(find.byTooltip('Retirer des favoris'), findsOneWidget);
+    expect(find.byTooltip('Partager'), findsOneWidget);
+    expect(find.byTooltip('Signaler'), findsOneWidget);
   });
 }
