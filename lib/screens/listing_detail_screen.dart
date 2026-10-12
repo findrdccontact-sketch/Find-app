@@ -43,15 +43,18 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
           IconButton(
             icon: Icon(isFav ? Icons.favorite : Icons.favorite_border),
             color: isFav ? Colors.red : Colors.white,
+            tooltip: isFav ? 'Retirer des favoris' : 'Ajouter aux favoris',
             onPressed: () => provider.toggleFavorite(item.id),
           ),
           IconButton(
             icon: const Icon(Icons.share),
+            tooltip: 'Partager l\'annonce',
             onPressed: () => _shareListing(context, item),
           ),
           IconButton(
             icon: const Icon(Icons.report_problem_outlined),
             color: Colors.amber,
+            tooltip: 'Signaler cette annonce',
             onPressed: () => _showReportDialog(context, provider, item),
           ),
         ],
