@@ -6,6 +6,7 @@ import 'package:find_app/screens/home_screen.dart';
 import 'package:find_app/screens/listing_detail_screen.dart';
 import 'package:find_app/screens/search_screen.dart';
 import 'package:find_app/services/app_provider.dart';
+import 'package:find_app/widgets/listing_card.dart';
 
 void main() {
   Widget buildTestableWidget(Widget child, {AppProvider? customProvider}) {
@@ -78,7 +79,7 @@ void main() {
     expect(find.text('République Démocratique du Congo'), findsOneWidget);
   });
 
-  testWidgets('ListingDetailScreen renders details, badges, and contact buttons', (WidgetTester tester) async {
+  testWidgets('ListingDetailScreen renders details, badges, contact buttons, and accessible tooltips', (WidgetTester tester) async {
     final provider = AppProvider();
     final sampleListing = provider.latestListings.first;
 
@@ -98,5 +99,29 @@ void main() {
     expect(find.text('Caractéristiques'), findsOneWidget);
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
+
+    expect(find.byTooltip('Retirer des favoris'), findsOneWidget);
+    expect(find.byTooltip('Partager cette annonce'), findsOneWidget);
+    expect(find.byTooltip('Signaler cette annonce'), findsOneWidget);
+  });
+
+  testWidgets('ListingCard includes accessible tooltip for favorite button', (WidgetTester tester) async {
+    final provider = AppProvider();
+    final sampleListing = provider.latestListings.first;
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        ListingCard(
+          listing: sampleListing,
+          isFavorite: false,
+          onTap: () {},
+          onFavoriteToggle: () {},
+        ),
+        customProvider: provider,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Ajouter aux favoris'), findsOneWidget);
   });
 }
