@@ -58,6 +58,7 @@ class ListingCard extends StatelessWidget {
                   child: CircleAvatar(
                     backgroundColor: Colors.white.withAlpha(220),
                     child: IconButton(
+                      tooltip: isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris',
                       icon: Icon(
                         isFavorite ? Icons.favorite : Icons.favorite_border,
                         color: isFavorite ? Colors.red : Colors.grey.shade700,
