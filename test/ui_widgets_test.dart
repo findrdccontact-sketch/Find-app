@@ -83,6 +83,30 @@ void main() {
     final sampleListing = provider.latestListings.first;
 
     await tester.pumpWidget(
+      ChangeNotifierProvider<AppProvider>.value(
+        value: provider,
+        child: MaterialApp(
+          home: ListingDetailScreen(
+            listing: sampleListing,
+            onBack: () {},
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text(sampleListing.title), findsAtLeastNWidgets(1));
+    expect(find.text('Localisation'), findsOneWidget);
+    expect(find.text('Caractéristiques'), findsOneWidget);
+    expect(find.text('Appeler'), findsOneWidget);
+    expect(find.text('WhatsApp'), findsOneWidget);
+  });
+
+  testWidgets('Favorite button displays correct tooltip based on favorite state', (WidgetTester tester) async {
+    final provider = AppProvider();
+    final sampleListing = provider.latestListings.first;
+
+    await tester.pumpWidget(
       buildTestableWidget(
         ListingDetailScreen(
           listing: sampleListing,
@@ -93,10 +117,12 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text(sampleListing.title), findsAtLeastNWidgets(1));
-    expect(find.text('Localisation'), findsOneWidget);
-    expect(find.text('Caractéristiques'), findsOneWidget);
-    expect(find.text('Appeler'), findsOneWidget);
-    expect(find.text('WhatsApp'), findsOneWidget);
+    expect(find.byTooltip('Ajouter aux favoris'), findsOneWidget);
+
+    // Toggle favorite on provider directly to trigger rebuild via Consumer/Provider
+    provider.toggleFavorite(sampleListing.id);
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Retirer des favoris'), findsOneWidget);
   });
 }
