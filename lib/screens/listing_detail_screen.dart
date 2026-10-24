@@ -34,6 +34,7 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
+          tooltip: 'Retour',
           onPressed: widget.onBack,
         ),
         title: Text(item.title),
@@ -43,15 +44,18 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
           IconButton(
             icon: Icon(isFav ? Icons.favorite : Icons.favorite_border),
             color: isFav ? Colors.red : Colors.white,
+            tooltip: isFav ? 'Retirer des favoris' : 'Ajouter aux favoris',
             onPressed: () => provider.toggleFavorite(item.id),
           ),
           IconButton(
             icon: const Icon(Icons.share),
+            tooltip: 'Partager',
             onPressed: () => _shareListing(context, item),
           ),
           IconButton(
             icon: const Icon(Icons.report_problem_outlined),
             color: Colors.amber,
+            tooltip: 'Signaler l\'annonce',
             onPressed: () => _showReportDialog(context, provider, item),
           ),
         ],
