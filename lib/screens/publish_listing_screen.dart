@@ -424,6 +424,7 @@ class _PublishListingScreenState extends State<PublishListingScreen> {
                               child: IconButton(
                                 padding: EdgeInsets.zero,
                                 icon: const Icon(Icons.close, size: 14, color: Colors.white),
+                                tooltip: 'Supprimer la photo',
                                 onPressed: () {
                                   setState(() {
                                     _photos.removeAt(idx);
@@ -516,11 +517,13 @@ class _PublishListingScreenState extends State<PublishListingScreen> {
           children: [
             IconButton(
               icon: const Icon(Icons.remove_circle_outline),
+              tooltip: 'Diminuer $label',
               onPressed: count > 0 ? () => onChanged(count - 1) : null,
             ),
             Text('$count', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             IconButton(
               icon: const Icon(Icons.add_circle_outline),
+              tooltip: 'Augmenter $label',
               onPressed: () => onChanged(count + 1),
             ),
           ],
