@@ -29,7 +29,7 @@ void main() {
     expect(find.text('Mon Espace'), findsOneWidget);
   });
 
-  testWidgets('HomeScreen renders categories and list items', (WidgetTester tester) async {
+  testWidgets('HomeScreen renders categories and list items with accessible favorite tooltips', (WidgetTester tester) async {
     await tester.pumpWidget(
       buildTestableWidget(
         HomeScreen(
@@ -46,6 +46,13 @@ void main() {
     expect(find.text('Maison'), findsOneWidget);
     expect(find.text('Appartement'), findsOneWidget);
     expect(find.text('Dernières annonces'), findsOneWidget);
+
+    // Scroll to ensure listing cards are rendered in SliverList
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -300));
+    await tester.pumpAndSettle();
+
+    // Verify favorite icon button tooltip accessibility
+    expect(find.byTooltip('Retirer des favoris'), findsAtLeastNWidgets(1));
   });
 
   testWidgets('SearchScreen expands filters and toggles map view', (WidgetTester tester) async {
