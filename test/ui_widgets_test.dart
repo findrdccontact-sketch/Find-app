@@ -99,4 +99,29 @@ void main() {
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
   });
+
+  testWidgets('ListingDetailScreen icon buttons have accessible tooltips', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 1920);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    final provider = AppProvider();
+    final sampleListing = provider.latestListings.first;
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        ListingDetailScreen(
+          listing: sampleListing,
+          onBack: () {},
+        ),
+        customProvider: provider,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Retour'), findsOneWidget);
+    expect(find.byTooltip('Retirer des favoris'), findsOneWidget);
+    expect(find.byTooltip('Partager'), findsOneWidget);
+    expect(find.byTooltip('Signaler l\'annonce'), findsOneWidget);
+  });
 }
