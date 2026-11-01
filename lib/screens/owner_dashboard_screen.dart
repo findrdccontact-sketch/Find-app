@@ -210,7 +210,8 @@ class OwnerDashboardScreen extends StatelessWidget {
                                 const SizedBox(width: 8),
                                 IconButton(
                                   icon: const Icon(Icons.delete, color: Colors.red),
-                                  onPressed: () => provider.deleteListing(item.id),
+                                  tooltip: 'Supprimer le logement',
+                                  onPressed: () => _confirmDelete(context, provider, item),
                                 ),
                               ],
                             ),
@@ -220,6 +221,36 @@ class OwnerDashboardScreen extends StatelessWidget {
                     );
                   },
                 ),
+        ],
+      ),
+    );
+  }
+
+  void _confirmDelete(BuildContext context, AppProvider provider, Listing item) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Supprimer le logement'),
+        content: Text('Êtes-vous sûr de vouloir supprimer définitivement "${item.title}" ?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Annuler'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              provider.deleteListing(item.id);
+              Navigator.pop(ctx);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Logement supprimé avec succès.')),
+              );
+            },
+            child: const Text('Supprimer'),
+          ),
         ],
       ),
     );
