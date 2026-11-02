@@ -3,7 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:find_app/main.dart';
 import 'package:find_app/screens/home_screen.dart';
+import 'package:find_app/models/app_user.dart';
 import 'package:find_app/screens/listing_detail_screen.dart';
+import 'package:find_app/screens/owner_dashboard_screen.dart';
 import 'package:find_app/screens/search_screen.dart';
 import 'package:find_app/services/app_provider.dart';
 
@@ -12,7 +14,7 @@ void main() {
     return ChangeNotifierProvider<AppProvider>(
       create: (_) => customProvider ?? AppProvider(),
       child: MaterialApp(
-        home: child,
+        home: Scaffold(body: child),
       ),
     );
   }
@@ -98,5 +100,65 @@ void main() {
     expect(find.text('Caractéristiques'), findsOneWidget);
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
+  });
+
+  testWidgets('OwnerDashboardScreen requires confirmation before deleting a listing', (WidgetTester tester) async {
+    final provider = AppProvider();
+    provider.switchUserRole(UserRole.owner);
+    // Add a listing owned by current user
+    final sample = provider.latestListings.first;
+    provider.addListing(sample.copyWith(id: 'owner_test_1', ownerId: provider.currentUser.id));
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        OwnerDashboardScreen(
+          onEditListing: (_) {},
+        ),
+        customProvider: provider,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(provider.userListings.length, 1);
+    final firstListingTitle = provider.userListings.first.title;
+    expect(find.text(firstListingTitle), findsOneWidget);
+
+    // Find delete button
+    final deleteButton = find.byTooltip('Supprimer l\'annonce').first;
+    expect(deleteButton, findsOneWidget);
+    await tester.ensureVisible(deleteButton);
+    await tester.pumpAndSettle();
+
+    // Tap delete button -> triggers confirmation dialog
+    await tester.tap(deleteButton);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Supprimer l\'annonce'), findsOneWidget);
+    expect(
+      find.text('Êtes-vous sûr de vouloir supprimer « $firstListingTitle » ? Cette action est irréversible.'),
+      findsOneWidget,
+    );
+
+    // Test cancellation
+    await tester.tap(find.text('Annuler'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Supprimer l\'annonce'), findsNothing);
+    expect(provider.userListings.length, 1);
+    expect(find.text(firstListingTitle), findsOneWidget);
+
+    // Tap delete again and confirm
+    await tester.ensureVisible(deleteButton);
+    await tester.pumpAndSettle();
+    await tester.tap(deleteButton);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Supprimer'));
+    await tester.pumpAndSettle();
+
+    // Verify deletion and feedback snackbar
+    expect(find.text('Annonce supprimée avec succès.'), findsOneWidget);
+    expect(provider.userListings.length, 0);
+    expect(find.text(firstListingTitle), findsNothing);
   });
 }
