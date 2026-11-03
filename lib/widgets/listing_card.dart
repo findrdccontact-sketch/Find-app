@@ -40,14 +40,22 @@ class ListingCard extends StatelessWidget {
                           errorBuilder: (ctx, err, stack) => Container(
                             color: Colors.blueGrey.shade100,
                             child: const Center(
-                              child: Icon(Icons.home, size: 48, color: Colors.grey),
+                              child: Icon(
+                                Icons.home,
+                                size: 48,
+                                color: Colors.grey,
+                              ),
                             ),
                           ),
                         )
                       : Container(
                           color: Colors.blueGrey.shade100,
                           child: const Center(
-                            child: Icon(Icons.home, size: 48, color: Colors.grey),
+                            child: Icon(
+                              Icons.home,
+                              size: 48,
+                              color: Colors.grey,
+                            ),
                           ),
                         ),
                 ),
@@ -62,6 +70,9 @@ class ListingCard extends StatelessWidget {
                         isFavorite ? Icons.favorite : Icons.favorite_border,
                         color: isFavorite ? Colors.red : Colors.grey.shade700,
                       ),
+                      tooltip: isFavorite
+                          ? 'Retirer des favoris'
+                          : 'Ajouter aux favoris',
                       onPressed: onFavoriteToggle,
                     ),
                   ),
@@ -75,14 +86,26 @@ class ListingCard extends StatelessWidget {
                     runSpacing: 4.0,
                     children: [
                       if (listing.isRented)
-                        const ListingBadge(type: BadgeType.rented, compact: true)
+                        const ListingBadge(
+                          type: BadgeType.rented,
+                          compact: true,
+                        )
                       else ...[
                         if (listing.isListingVerified)
-                          const ListingBadge(type: BadgeType.listingVerified, compact: true),
+                          const ListingBadge(
+                            type: BadgeType.listingVerified,
+                            compact: true,
+                          ),
                         if (listing.isOwnerVerified)
-                          const ListingBadge(type: BadgeType.ownerVerified, compact: true),
+                          const ListingBadge(
+                            type: BadgeType.ownerVerified,
+                            compact: true,
+                          ),
                         if (listing.isNewListing)
-                          const ListingBadge(type: BadgeType.newListing, compact: true),
+                          const ListingBadge(
+                            type: BadgeType.newListing,
+                            compact: true,
+                          ),
                       ],
                     ],
                   ),
@@ -101,9 +124,9 @@ class ListingCard extends StatelessWidget {
                       Text(
                         '\$${listing.rentPrice.toStringAsFixed(0)} / mois',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              color: Theme.of(context).primaryColor,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         listing.propertyType,
@@ -127,7 +150,11 @@ class ListingCard extends StatelessWidget {
                   const SizedBox(height: 4.0),
                   Row(
                     children: [
-                      const Icon(Icons.location_on, size: 16, color: Colors.redAccent),
+                      const Icon(
+                        Icons.location_on,
+                        size: 16,
+                        color: Colors.redAccent,
+                      ),
                       const SizedBox(width: 4.0),
                       Expanded(
                         child: Text(
@@ -148,9 +175,13 @@ class ListingCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       _specItem(Icons.king_bed, '${listing.bedroomsCount} chb'),
-                      _specItem(Icons.weekend, '${listing.livingRoomsCount} salon'),
+                      _specItem(
+                        Icons.weekend,
+                        '${listing.livingRoomsCount} salon',
+                      ),
                       _specItem(Icons.bathtub, '${listing.bathroomsCount} sdb'),
-                      if (listing.hasParking) _specItem(Icons.local_parking, 'Parking'),
+                      if (listing.hasParking)
+                        _specItem(Icons.local_parking, 'Parking'),
                     ],
                   ),
                 ],

@@ -45,8 +45,12 @@ class _HomeScreenState extends State<HomeScreen> {
     final listings = _selectedCategory == 'Tous'
         ? provider.latestListings
         : provider.latestListings
-            .where((l) => l.propertyType.toLowerCase() == _selectedCategory.toLowerCase())
-            .toList();
+              .where(
+                (l) =>
+                    l.propertyType.toLowerCase() ==
+                    _selectedCategory.toLowerCase(),
+              )
+              .toList();
 
     return Scaffold(
       body: CustomScrollView(
@@ -82,7 +86,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(Icons.home_work, color: Colors.indigo, size: 28),
+                          child: const Icon(
+                            Icons.home_work,
+                            color: Colors.indigo,
+                            size: 28,
+                          ),
                         ),
                         const SizedBox(width: 12),
                         const Text(
@@ -112,6 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
             actions: [
               IconButton(
                 icon: const Icon(Icons.notifications, color: Colors.white),
+                tooltip: 'Notifications',
                 onPressed: () {
                   _showNotificationsDialog(context, provider);
                 },
@@ -147,7 +156,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12.0),
                             ),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                            ),
                           ),
                           onSubmitted: (value) {
                             provider.setSearchQuery(value);
@@ -158,7 +169,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(width: 8),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16,
+                            horizontal: 16,
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -184,12 +198,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        side: BorderSide(color: Theme.of(context).primaryColor, width: 1.5),
+                        side: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 1.5,
+                        ),
                       ),
                       icon: const Icon(Icons.add_circle_outline),
                       label: const Text(
                         'Publier une annonce',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       onPressed: widget.onNavigateToPublish,
                     ),
@@ -226,7 +246,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             selectedColor: Theme.of(context).primaryColor,
                             labelStyle: TextStyle(
                               color: isSelected ? Colors.white : Colors.black87,
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                             ),
                             onSelected: (selected) {
                               setState(() {
@@ -248,7 +270,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       const Text(
                         'Dernières annonces',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         '${listings.length} logement(s)',
@@ -279,21 +304,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 )
               : SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final item = listings[index];
-                      return ListingCard(
-                        listing: item,
-                        isFavorite: provider.isFavorite(item.id),
-                        onTap: () {
-                          provider.incrementViews(item.id);
-                          widget.onListingSelect(item);
-                        },
-                        onFavoriteToggle: () => provider.toggleFavorite(item.id),
-                      );
-                    },
-                    childCount: listings.length,
-                  ),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final item = listings[index];
+                    return ListingCard(
+                      listing: item,
+                      isFavorite: provider.isFavorite(item.id),
+                      onTap: () {
+                        provider.incrementViews(item.id);
+                        widget.onListingSelect(item);
+                      },
+                      onFavoriteToggle: () => provider.toggleFavorite(item.id),
+                    );
+                  }, childCount: listings.length),
                 ),
         ],
       ),
@@ -329,13 +351,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       title: Text(
                         notif.title,
                         style: TextStyle(
-                          fontWeight: notif.isRead ? FontWeight.normal : FontWeight.bold,
+                          fontWeight: notif.isRead
+                              ? FontWeight.normal
+                              : FontWeight.bold,
                         ),
                       ),
                       subtitle: Text(notif.message),
                       trailing: notif.isRead
                           ? null
-                          : const Icon(Icons.circle, size: 10, color: Colors.blue),
+                          : const Icon(
+                              Icons.circle,
+                              size: 10,
+                              color: Colors.blue,
+                            ),
                       onTap: () {
                         provider.markNotificationRead(notif.id);
                         Navigator.pop(ctx);

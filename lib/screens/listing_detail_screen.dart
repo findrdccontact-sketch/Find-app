@@ -34,6 +34,7 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
+          tooltip: 'Retour',
           onPressed: widget.onBack,
         ),
         title: Text(item.title),
@@ -43,15 +44,18 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
           IconButton(
             icon: Icon(isFav ? Icons.favorite : Icons.favorite_border),
             color: isFav ? Colors.red : Colors.white,
+            tooltip: isFav ? 'Retirer des favoris' : 'Ajouter aux favoris',
             onPressed: () => provider.toggleFavorite(item.id),
           ),
           IconButton(
             icon: const Icon(Icons.share),
+            tooltip: 'Partager l\'annonce',
             onPressed: () => _shareListing(context, item),
           ),
           IconButton(
             icon: const Icon(Icons.report_problem_outlined),
             color: Colors.amber,
+            tooltip: 'Signaler un problème',
             onPressed: () => _showReportDialog(context, provider, item),
           ),
         ],
@@ -80,7 +84,11 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                               errorBuilder: (c, e, s) => Container(
                                 color: Colors.blueGrey.shade100,
                                 child: const Center(
-                                  child: Icon(Icons.home, size: 64, color: Colors.grey),
+                                  child: Icon(
+                                    Icons.home,
+                                    size: 64,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               ),
                             );
@@ -89,7 +97,11 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                       : Container(
                           color: Colors.blueGrey.shade100,
                           child: const Center(
-                            child: Icon(Icons.home, size: 64, color: Colors.grey),
+                            child: Icon(
+                              Icons.home,
+                              size: 64,
+                              color: Colors.grey,
+                            ),
                           ),
                         ),
                 ),
@@ -99,14 +111,20 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                     bottom: 12,
                     right: 12,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.black54,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
                         '${_currentImageIndex + 1} / ${item.photos.length}',
-                        style: const TextStyle(color: Colors.white, fontSize: 12),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
                       ),
                     ),
                   ),
@@ -131,7 +149,8 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                           const ListingBadge(type: BadgeType.listingVerified),
                         if (item.isOwnerVerified)
                           const ListingBadge(type: BadgeType.ownerVerified),
-                        if (item.isNewListing) const ListingBadge(type: BadgeType.newListing),
+                        if (item.isNewListing)
+                          const ListingBadge(type: BadgeType.newListing),
                       ],
                     ],
                   ),
@@ -140,7 +159,10 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                   // Title & Price
                   Text(
                     item.title,
-                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 8),
 
@@ -156,7 +178,10 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                       ),
                       const SizedBox(width: 16),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.indigo.shade50,
                           borderRadius: BorderRadius.circular(8),
@@ -176,7 +201,9 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                   // Location Card
                   Card(
                     color: Colors.grey.shade50,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Column(
@@ -186,7 +213,10 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                             children: [
                               Icon(Icons.location_on, color: Colors.redAccent),
                               SizedBox(width: 8),
-                              Text('Localisation', style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text(
+                                'Localisation',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 8),
@@ -196,7 +226,10 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                           Text('Avenue: ${item.avenue}'),
                           Text(
                             'GPS: ${item.latitude.toStringAsFixed(4)}, ${item.longitude.toStringAsFixed(4)}',
-                            style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 12,
+                            ),
                           ),
                         ],
                       ),
@@ -206,21 +239,38 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                   const SizedBox(height: 16),
 
                   // Specifications
-                  const Text('Caractéristiques', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Caractéristiques',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 12,
                     runSpacing: 8,
                     children: [
-                      _featureChip(Icons.king_bed, '${item.bedroomsCount} Chambre(s)'),
-                      _featureChip(Icons.weekend, '${item.livingRoomsCount} Salon(s)'),
-                      _featureChip(Icons.bathtub, '${item.bathroomsCount} Salle(s) de bain'),
-                      if (item.hasKitchen) _featureChip(Icons.kitchen, 'Cuisine'),
-                      if (item.hasParking) _featureChip(Icons.local_parking, 'Parking'),
+                      _featureChip(
+                        Icons.king_bed,
+                        '${item.bedroomsCount} Chambre(s)',
+                      ),
+                      _featureChip(
+                        Icons.weekend,
+                        '${item.livingRoomsCount} Salon(s)',
+                      ),
+                      _featureChip(
+                        Icons.bathtub,
+                        '${item.bathroomsCount} Salle(s) de bain',
+                      ),
+                      if (item.hasKitchen)
+                        _featureChip(Icons.kitchen, 'Cuisine'),
+                      if (item.hasParking)
+                        _featureChip(Icons.local_parking, 'Parking'),
                       if (item.hasFence) _featureChip(Icons.fence, 'Clôture'),
-                      if (item.hasWater) _featureChip(Icons.water_drop, 'Eau disponible'),
-                      if (item.hasElectricity) _featureChip(Icons.bolt, 'Électricité'),
-                      if (item.hasInternet) _featureChip(Icons.wifi, 'Internet / Wifi'),
+                      if (item.hasWater)
+                        _featureChip(Icons.water_drop, 'Eau disponible'),
+                      if (item.hasElectricity)
+                        _featureChip(Icons.bolt, 'Électricité'),
+                      if (item.hasInternet)
+                        _featureChip(Icons.wifi, 'Internet / Wifi'),
                       if (item.hasGarden) _featureChip(Icons.park, 'Jardin'),
                     ],
                   ),
@@ -229,7 +279,13 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
 
                   // Video Link Section (if available)
                   if (item.videoUrl != null && item.videoUrl!.isNotEmpty) ...[
-                    const Text('Vidéo de présentation', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    const Text(
+                      'Vidéo de présentation',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.all(12),
@@ -240,19 +296,33 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.play_circle_fill, color: Colors.red, size: 36),
+                          const Icon(
+                            Icons.play_circle_fill,
+                            color: Colors.red,
+                            size: 36,
+                          ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               'Regarder la vidéo du logement',
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red.shade900),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red.shade900,
+                              ),
                             ),
                           ),
                           ElevatedButton(
-                            style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              foregroundColor: Colors.white,
+                            ),
                             onPressed: () {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Ouverture de la vidéo: ${item.videoUrl}')),
+                                SnackBar(
+                                  content: Text(
+                                    'Ouverture de la vidéo: ${item.videoUrl}',
+                                  ),
+                                ),
                               );
                             },
                             child: const Text('Voir'),
@@ -264,7 +334,10 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                   ],
 
                   // Description
-                  const Text('Description', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Description',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     item.description,
@@ -276,7 +349,9 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                   // Owner / Agency Info Card
                   Card(
                     elevation: 2,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Row(
@@ -285,8 +360,14 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                             radius: 24,
                             backgroundColor: Theme.of(context).primaryColor,
                             child: Text(
-                              item.ownerName.isNotEmpty ? item.ownerName[0].toUpperCase() : 'P',
-                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+                              item.ownerName.isNotEmpty
+                                  ? item.ownerName[0].toUpperCase()
+                                  : 'P',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -296,11 +377,19 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                               children: [
                                 Text(
                                   item.ownerName,
-                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
                                 ),
                                 Text(
-                                  item.isOwnerVerified ? 'Propriétaire vérifié 🔵' : 'Bailleur / Agent',
-                                  style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                                  item.isOwnerVerified
+                                      ? 'Propriétaire vérifié 🔵'
+                                      : 'Bailleur / Agent',
+                                  style: TextStyle(
+                                    color: Colors.grey.shade600,
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ],
                             ),
@@ -310,7 +399,9 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 80), // Padding for sticky bottom contact bar
+                  const SizedBox(
+                    height: 80,
+                  ), // Padding for sticky bottom contact bar
                 ],
               ),
             ),
@@ -339,10 +430,15 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                   backgroundColor: Colors.green.shade600,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
                 icon: const Icon(Icons.phone),
-                label: const Text('Appeler', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                label: const Text(
+                  'Appeler',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
                 onPressed: () {
                   provider.incrementCalls(item.id);
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -358,14 +454,23 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                   backgroundColor: const Color(0xFF25D366),
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
                 icon: const Icon(Icons.chat_bubble),
-                label: const Text('WhatsApp', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                label: const Text(
+                  'WhatsApp',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
                 onPressed: () {
                   provider.incrementWhatsApp(item.id);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Ouvrir WhatsApp pour le ${item.ownerWhatsApp}')),
+                    SnackBar(
+                      content: Text(
+                        'Ouvrir WhatsApp pour le ${item.ownerWhatsApp}',
+                      ),
+                    ),
                   );
                 },
               ),
@@ -386,11 +491,17 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
 
   void _shareListing(BuildContext context, Listing item) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Lien partagé: https://find.cd/property/${item.id}')),
+      SnackBar(
+        content: Text('Lien partagé: https://find.cd/property/${item.id}'),
+      ),
     );
   }
 
-  void _showReportDialog(BuildContext context, AppProvider provider, Listing item) {
+  void _showReportDialog(
+    BuildContext context,
+    AppProvider provider,
+    Listing item,
+  ) {
     final reasonController = TextEditingController();
     final detailsController = TextEditingController();
 
@@ -424,7 +535,10 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
             child: const Text('Annuler'),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
             onPressed: () {
               if (reasonController.text.isNotEmpty) {
                 provider.submitReport(
@@ -435,7 +549,11 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                 );
                 Navigator.pop(ctx);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Signalement transmis aux administrateurs FIND.')),
+                  const SnackBar(
+                    content: Text(
+                      'Signalement transmis aux administrateurs FIND.',
+                    ),
+                  ),
                 );
               }
             },
