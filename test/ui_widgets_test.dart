@@ -98,5 +98,25 @@ void main() {
     expect(find.text('Caractéristiques'), findsOneWidget);
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
+
+    // Verify AppBar tooltips (sampleListing lst_001 is initially favorite in mock data)
+    expect(find.byTooltip('Retour'), findsOneWidget);
+    expect(find.byTooltip('Retirer des favoris'), findsOneWidget);
+    expect(find.byTooltip('Partager l\'annonce'), findsOneWidget);
+    expect(find.byTooltip('Signaler cette annonce'), findsOneWidget);
+
+    // Tap favorite button to remove from favorites and verify feedback SnackBar & updated tooltip
+    await tester.tap(find.byTooltip('Retirer des favoris'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Retiré des favoris'), findsOneWidget);
+    expect(find.byTooltip('Ajouter aux favoris'), findsOneWidget);
+
+    // Toggle back to favorite
+    await tester.tap(find.byTooltip('Ajouter aux favoris'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ajouté aux favoris'), findsOneWidget);
+    expect(find.byTooltip('Retirer des favoris'), findsOneWidget);
   });
 }
