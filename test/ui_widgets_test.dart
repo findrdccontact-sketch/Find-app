@@ -99,4 +99,32 @@ void main() {
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
   });
+
+  testWidgets('Favorite button in ListingDetailScreen and ListingCard provides accessible tooltips', (WidgetTester tester) async {
+    final provider = AppProvider();
+    final sampleListing = provider.latestListings.first;
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        ListingDetailScreen(
+          listing: sampleListing,
+          onBack: () {},
+        ),
+        customProvider: provider,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // In initial mock state, lst_001 is favorite
+    expect(find.byTooltip('Retirer des favoris'), findsOneWidget);
+    expect(find.byTooltip('Partager l\'annonce'), findsOneWidget);
+    expect(find.byTooltip('Signaler un problème'), findsOneWidget);
+
+    // Toggle favorite off
+    await tester.tap(find.byTooltip('Retirer des favoris'));
+    await tester.pumpAndSettle();
+
+    // Should now display 'Ajouter aux favoris'
+    expect(find.byTooltip('Ajouter aux favoris'), findsOneWidget);
+  });
 }
