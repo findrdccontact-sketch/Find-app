@@ -41,15 +41,28 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
         foregroundColor: Colors.white,
         actions: [
           IconButton(
+            tooltip: isFav ? 'Retirer des favoris' : 'Ajouter aux favoris',
             icon: Icon(isFav ? Icons.favorite : Icons.favorite_border),
             color: isFav ? Colors.red : Colors.white,
-            onPressed: () => provider.toggleFavorite(item.id),
+            onPressed: () {
+              provider.toggleFavorite(item.id);
+              final newlyFav = provider.isFavorite(item.id);
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(newlyFav ? 'Ajouté aux favoris' : 'Retiré des favoris'),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            },
           ),
           IconButton(
+            tooltip: 'Partager l\'annonce',
             icon: const Icon(Icons.share),
             onPressed: () => _shareListing(context, item),
           ),
           IconButton(
+            tooltip: 'Signaler l\'annonce',
             icon: const Icon(Icons.report_problem_outlined),
             color: Colors.amber,
             onPressed: () => _showReportDialog(context, provider, item),

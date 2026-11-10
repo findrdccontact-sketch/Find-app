@@ -98,5 +98,21 @@ void main() {
     expect(find.text('Caractéristiques'), findsOneWidget);
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
+
+    // Verify favorite tooltip and SnackBar feedback on toggle (sampleListing 'lst_001' starts as favorite)
+    final favButton = find.byTooltip('Retirer des favoris');
+    expect(favButton, findsOneWidget);
+
+    await tester.tap(favButton);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Retiré des favoris'), findsOneWidget);
+    expect(find.byTooltip('Ajouter aux favoris'), findsOneWidget);
+
+    // Toggle back to favorite
+    await tester.tap(find.byTooltip('Ajouter aux favoris'));
+    await tester.pumpAndSettle();
+    expect(find.text('Ajouté aux favoris'), findsOneWidget);
+    expect(find.byTooltip('Retirer des favoris'), findsOneWidget);
   });
 }
