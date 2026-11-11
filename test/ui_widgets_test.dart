@@ -6,6 +6,7 @@ import 'package:find_app/screens/home_screen.dart';
 import 'package:find_app/screens/listing_detail_screen.dart';
 import 'package:find_app/screens/search_screen.dart';
 import 'package:find_app/services/app_provider.dart';
+import 'package:find_app/widgets/listing_card.dart';
 
 void main() {
   Widget buildTestableWidget(Widget child, {AppProvider? customProvider}) {
@@ -98,5 +99,50 @@ void main() {
     expect(find.text('Caractéristiques'), findsOneWidget);
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
+
+    // Verify AppBar action tooltips (sampleListing lst_001 is initially favorited in AppProvider)
+    expect(find.byTooltip('Retour'), findsOneWidget);
+    expect(find.byTooltip('Retirer des favoris'), findsOneWidget);
+    expect(find.byTooltip('Partager l\'annonce'), findsOneWidget);
+    expect(find.byTooltip('Signaler l\'annonce'), findsOneWidget);
+  });
+
+  testWidgets('ListingCard provides accessible tooltips based on favorite state', (WidgetTester tester) async {
+    final provider = AppProvider();
+    final sampleListing = provider.latestListings.first;
+
+    // Test unfavorited state
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ListingCard(
+            listing: sampleListing,
+            isFavorite: false,
+            onTap: () {},
+            onFavoriteToggle: () {},
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Ajouter aux favoris'), findsOneWidget);
+
+    // Test favorited state
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ListingCard(
+            listing: sampleListing,
+            isFavorite: true,
+            onTap: () {},
+            onFavoriteToggle: () {},
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Retirer des favoris'), findsOneWidget);
   });
 }
