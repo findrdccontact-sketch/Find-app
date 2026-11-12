@@ -6,6 +6,7 @@ import 'package:find_app/screens/home_screen.dart';
 import 'package:find_app/screens/listing_detail_screen.dart';
 import 'package:find_app/screens/search_screen.dart';
 import 'package:find_app/services/app_provider.dart';
+import 'package:find_app/widgets/listing_card.dart';
 
 void main() {
   Widget buildTestableWidget(Widget child, {AppProvider? customProvider}) {
@@ -98,5 +99,53 @@ void main() {
     expect(find.text('Caractéristiques'), findsOneWidget);
     expect(find.text('Appeler'), findsOneWidget);
     expect(find.text('WhatsApp'), findsOneWidget);
+  });
+
+  testWidgets('ListingCard and ListingDetailScreen have accessible tooltips and favorite feedback', (WidgetTester tester) async {
+    final provider = AppProvider();
+    final sampleListing = provider.latestListings.first;
+
+    // Test ListingCard tooltips
+    await tester.pumpWidget(
+      buildTestableWidget(
+        ListingCard(
+          listing: sampleListing,
+          isFavorite: false,
+          onTap: () {},
+          onFavoriteToggle: () {},
+        ),
+        customProvider: provider,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final cardFavBtn = find.byTooltip('Ajouter aux favoris');
+    expect(cardFavBtn, findsOneWidget);
+
+    // Test ListingDetailScreen tooltips and feedback SnackBar
+    await tester.pumpWidget(
+      buildTestableWidget(
+        ListingDetailScreen(
+          listing: sampleListing,
+          onBack: () {},
+        ),
+        customProvider: provider,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Retour'), findsOneWidget);
+    expect(find.byTooltip('Partager'), findsOneWidget);
+    expect(find.byTooltip('Signaler cette annonce'), findsOneWidget);
+
+    final detailFavBtn = find.byTooltip(provider.isFavorite(sampleListing.id) ? 'Retirer des favoris' : 'Ajouter aux favoris');
+    expect(detailFavBtn, findsOneWidget);
+
+    // Tap favorite button to verify SnackBar feedback with undo
+    await tester.tap(detailFavBtn);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SnackBar), findsOneWidget);
+    expect(find.text('Annuler'), findsOneWidget);
   });
 }
